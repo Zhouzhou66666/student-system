@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>{{message.warning}}</h1>
+<div id="box">
+    <p>页面在
+        <span id="Os">3</span>
+        s后跳转
+    </p>
+</div>
+<a href="/admin-login.html">点击返回重试</a>
+</body>
+</html>
+
+<script>
+    var Os=document.getElementById("Os");
+    var num=3;
+    var timer=setInterval(function () {
+        num--;
+        Os.innerText=num;
+        if(num==0){
+            window.location.href="/admin-login.html";
+        }
+    },1000)
+</script>

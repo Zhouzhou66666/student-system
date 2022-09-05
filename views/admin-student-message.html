@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>查看学生信息</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../public/css/dashboard.css" rel="stylesheet">
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="https://fastly.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.38/assets/js/vendor/jquery.min.js"><\/script>')</script>
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">淄博职业学院学生管理系统</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">设置</a></li>
+                <li><a href="#">我的</a></li>
+                <li><a href="#">帮助</a></li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="请输入手机号" id="searchText">
+                <button type="button" class="btn" id="searchStudent">查找</button>
+            </form>
+            <script>
+                $('#searchStudent').click(()=>{
+                    $.get(
+                        '/search-student',
+                        {account:$('#searchText').val()},
+                        data=>{
+                            if (data){
+                                $('#screen').html(`
+                                <h1 class="page-header">查看学生信息</h1>
+            <div class="table-responsive">
+                <table class="table table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>姓名</th>
+                        <th>账号</th>
+                        <th>年龄</th>
+                        <th>性别</th>
+                        <th>爱好</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>${data.id}</td>
+                        <td>${data.name}</td>
+                        <td>${data.account}</td>
+                        <td>${data.age}</td>
+                        <td>${data.gender}</td>
+                        <td>${data.hobbies}</td>
+
+
+                        <td>
+                            <a href="/admin-edit-student.html?account=${data.account}"
+                               class="btn btn-primary btn-xs">修改</a>
+                            <a href="/admin-delete-student?account=${data.account}"
+                               class="btn btn-danger btn-xs deleteBtn">删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>`)
+                                return
+                            }
+                            alert('查无此人')
+                        }
+                    )
+                })
+            </script>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <!--<li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>-->
+                <!--双大括号each语法是express-art-template提供的，不懂得去看express-art-template文档-->
+                {{each result.admin.permission}}
+                <li class="{{$value.path==='/admin-student-message.html'?'active':''}}"><a href="{{$value.path}}">{{$value.name}}</a>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div id="screen"></div>
+            <h1 class="page-header">查看学生信息</h1>
+
+            <!--            <h2 class="sub-header">Section title</h2>-->
+            <div class="table-responsive">
+                <table class="table table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>姓名</th>
+                        <th>账号</th>
+                        <th>年龄</th>
+                        <th>性别</th>
+                        <th>爱好</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{each result.studentsMessage}}
+                    <tr>
+                        <td>{{$index+1}}</td>
+                        <td>{{$value.name}}</td>
+                        <td>{{$value.account}}</td>
+                        <td>{{$value.age}}</td>
+                        <td>{{$value.gender==1?"男":"女"}}</td>
+                        <td>{{$value.hobbies.join("、")}}</td>
+                        <!--数组转字符串用顿号隔开-->
+                        <td>
+                            <a href="/admin-edit-student.html?account={{$value.account}}"
+                               class="btn btn-primary btn-xs">修改</a>
+                            <a href="/admin-delete-student?account={{$value.account}}"
+                               class="btn btn-danger btn-xs deleteBtn">删除</a>
+                        </td>
+                    </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
+<script>
+    /*let deleteBtn = document.getElementsByTagName('deleteBtn')
+    for (let i = 0; i < deleteBtn.length; i++) {
+        deleteBtn[0].onclick = function (event) {
+            if (!confirm('您确定删除吗?')) {
+                event.preventDefault()//取消默认事件
+            }
+        }
+    }*/
+    $('.deleteBtn').click(event=>{
+        if (!confirm('您确定删除吗?')){
+            event.preventDefault()//取消默认事件
+        }
+    })
+</script>

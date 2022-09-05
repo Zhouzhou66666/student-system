@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>修改管理员</title>
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="https://fastly.jsdelivr.net/npm/@bootcss/v3.bootcss.com@1.0.38/assets/js/vendor/jquery.min.js"><\/script>')</script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../public/css/dashboard.css" rel="stylesheet">
+    <style>
+        #account ~ p {
+            color: red;
+        }
+
+        #account + span {
+            display: none
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">淄博职业学院学生管理系统</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">设置</a></li>
+                <li><a href="#">我的</a></li>
+                <li><a href="#">帮助</a></li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="请输入姓名/学号/手机号">
+                <input type="submit" value="查找" class="btn">
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <!--<li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>-->
+                <!--双大括号each语法是express-art-template提供的，不懂得去看express-art-template文档-->
+                {{each result.admin.permission}}
+                <li class="{{$value.path==='/administrators-message.html'?'active':''}}"><a href="{{$value.path}}">{{$value.name}}</a>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">修改管理员</h1>
+            <form class="form-horizontal" action="/edit-administrator" method="get">
+                <input type="hidden" value="{{result.administrator.id}}" name="id">
+                <!--                readonly disabled-->
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 control-label">姓名：</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="name" placeholder="请输入管理员姓名" name="name" value="{{result.administrator.name}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-2 control-label">邮箱：</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="email" placeholder="请输入管理员邮箱" name="email" value="{{result.administrator.email}}">
+                    </div>
+                </div>
+                <div class="form-group" id="accountBox">
+                    <label for="account" class="col-sm-2 control-label">账号：</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="account" placeholder="请输入管理员账号" name="account" value="{{result.administrator.account}}">
+                        <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                        <p></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <strong class="col-sm-2 control-label">管理员类型：</strong>
+                    <div class="col-sm-10">
+                        <label class="radio-inline">
+                            <input type="radio" name="isSuperAdmin" {{result.administrator.isSuperAdmin==true?"checked":""}} value="true"> 超级管理员
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="isSuperAdmin"  {{result.administrator.isSuperAdmin==false?"checked":""}} value="false"> 管理员
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <strong class="col-sm-2 control-label">是否在职：</strong>
+                    <div class="col-sm-10">
+                        <label class="radio-inline">
+                            <input type="radio" name="incumbency" {{result.administrator.incumbency==true?"checked":""}} value="true"> 在职
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="incumbency"  {{result.administrator.incumbency==false?"checked":""}} value="false"> 非在职
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary">提 交</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+<script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
+<script>
+    const phone_reg = /^1((3[0-9])|(4[57])|(5[0-35-9])|(7[035-8])|(8[0-9])|66|98|99|47)\d{8}$/
+    let isTest = true
+
+    /*$('#accountBox').on('change(()',()=>{
+
+    })*/
+    function testAccountError(warning) {
+        $('#account~p').html(warning)
+        //框变红
+        $('#accountBox').addClass("has-error has-feedback")
+        //错号出现
+        $('#account+span').show()
+    }
+
+    //判断账号格式是否正确
+    /*if (账号格式正确){
+        //jq ajax向后台发送账号，判断是否已注册
+     if (未注册){
+
+     }   else{
+         //提示账号已注册
+        }
+    }else {
+        //提示：账号格式不正确
+    }*/
+    $('#account').change(function () {
+        if ($(this).val()=='{{result.administrator.account}}'){
+            $('#account~p').html('')
+            $('#accountBox').removeClass(' has-error has-feedback')
+            $('#account+span').hide()
+            isTest=true
+            return;
+        }
+        // if (phone_reg.test(this.value)){
+        if (!phone_reg.test($(this).val())) {
+            testAccountError('账号格式不正确')
+            isTest=false
+            return
+        }
+
+
+        //jq ajax向后台发送账号，判断是否注册
+        $.get(
+            '/test-account2',//发送的地址
+            {account: $(this).val()},//发送的内容
+            (data) => {
+                console.log(data)//后端回来的信息
+                if (data) {
+                    isTest=false
+                    //提示：已注册
+                    testAccountError("账号已注册")
+                    return
+                }
+                $('#account~p').html('')
+                $('#accountBox').removeClass(' has-error has-feedback')
+                $('#account+span').hide()
+                isTest=true
+            }
+        )
+    })
+
+    /*$('form').submit(function () {
+        return isTest
+    })*/
+    $('form').on('submit', function () {
+        return isTest
+    })
+</script>

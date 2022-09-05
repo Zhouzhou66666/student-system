@@ -1,0 +1,33 @@
+{
+  "admin": [
+    {
+      "id": 1,
+      "name": "查看学生",
+      "path": "/admin-student-message.html"
+    },
+    {
+      "id": 2,
+      "name": "添加学生",
+      "path": "/admin-add-student.html"
+    }
+  ],
+  "superAdmin": [
+    {
+      "id": 3,
+      "name": "查看管理员",
+      "path": "/administrators-message.html"
+    },
+    {
+      "id": 4,
+      "name": "添加管理员",
+      "path": "/administrator-add.html"
+    }
+  ],
+  "student": [
+    {
+      "id": 5,
+      "name": "查看个人信息",
+      "path": "/"
+    }
+  ]
+}
